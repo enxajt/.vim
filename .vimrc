@@ -30,27 +30,12 @@ endif
 
 "---------------------------------------------------------------
 " file, directly 
-if has('win32')
-  let $VIMDIR = $HOME."/dev/vim"
-elseif has('mac') || has('unix')
-  let $VIMDIR = $HOME . "/.vim"
-  if has("vim_starting")
-    if ! isdirectory($VIMDIR)
-      call system("mkdir " . $VIMDIR)
-    endif
-  endif
-endif
-
+let $VIMDIR = $HOME."/.vim"
 "=の前後にスペースは入れない
-"let &backupdir=$VIMDIR."/backup" 
-"let &directory=$VIMDIR."/swp" 
-"let &undodir=$VIMDIR."/undo"
+let &backupdir=$VIMDIR."/backup" 
+let &directory=$VIMDIR."/swp" 
+let &undodir=$VIMDIR."/undo"
 "let &dictionary=$VIMDIR."/dict/kotani.dicts" 
-
-let &backupdir=$VIM."/backup" 
-let &directory=$VIM."/swp" 
-let &undodir=$VIM."/undo"
-"let &dictionary=$VIM."/dict/kotani.dicts" 
 
 "---------------------------------------------------------------
 " file(encode, format)
@@ -292,10 +277,10 @@ endif
 
 " 画面を黒地に白にする (次行の先頭の " を削除すれば有効になる)
 set background=dark
-colorscheme hybrid " (Windows用gvim使用時はgvimrcを編集すること)
+"colorscheme hybrid " (Windows用gvim使用時はgvimrcを編集すること)
 
 function! s:load_after_colors()
-  let color = expand($VIMDIR.'/colors/color_kohei.vim')
+  let color = expand($VIMDIR.'/colors/color_enxajt.vim')
   if filereadable(color)
     execute 'source ' color
   endif
