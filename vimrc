@@ -205,11 +205,11 @@ set smarttab
 "
 "全角スペースをハイライト表示
 function! ZenkakuSpace()
-    highlight ZenkakuSpace cterm=reverse ctermfg=grey gui=reverse guifg=DarksLateGray
+    highlight ZenkakuSpace cterm=reverse ctermfg=grey gui=reverse guifg=#2F4F4F
 endfunction
 "darkgrey 文字色っぽい
 "dimgrey 文字色っぽい
-"DarksLateGray 緑っぽい
+"DarksLateGray 緑っぽい#2F4F4F
 if has('syntax')
   augroup ZenkakuSpace
     autocmd!
@@ -530,6 +530,72 @@ call neobundle#begin(expand($VIM.'/bundle'))
   NeoBundle 'shougo/unite.vim'
   NeoBundle 'shougo/neoyank.vim'
   NeoBundle 'shougo/unite-outline'
+  let g:unite_enable_start_insert = 1
+
+  " 水平分割なら下に、垂直分割なら右に開く
+  let g:unite_split_rule = 'botright'
+  
+  "nmap [unite] <Nop>
+  nmap <C-l> [unite]
+  
+  "nmap <silent> [unite]f :<C-u>UniteWithBufferDir -buffer-name=files file<CR>
+  nmap <silent> [unite]o :<C-u>Unite -vertical -winwidth=40 outline<CR>
+  "nmap <silent> [unite]b :<C-u>Unite buffer<CR>
+  "nmap <silent> [unite]r :<C-u>Unite -buffer-name=register register<CR>
+  
+  " BOOKMARK
+  "nmap <silent> [unite]c :<C-u>Unite bookmark<CR>
+  "nmap <silent> [unite]a :<C-u>UniteBookmarkAdd<CR>
+  
+  " most recently viewed files
+  let g:unite_source_file_mru_limit = 50
+  "file_mruの表示フォーマットを指定。空にすると表示スピードが高速化される
+  let g:unite_source_file_mru_filename_format = ''
+  nmap <silent> [unite]mt :<C-u>Unite file_mru -default-action=tabopen<CR>
+  nmap <silent> [unite]mv :<C-u>Unite file_mru -default-action=vsplit<CR>
+  nmap <silent> [unite]ms :<C-u>Unite file_mru -default-action=split<CR>
+  "nnoremap <leader>frt :Unite -quick-match file_mru -default-action=tabopen<CR>
+  "nnoremap <leader>frh :Unite -quick-match file_mru -default-action=split<CR>
+  "nnoremap <leader>frf :Unite -quick-match file_mru<CR>
+  
+  "" 現在編集中のファイルが所属するプロジェクトのトップディレクトリ
+  "" (.git があったり Makefile があったり、configure があったりするディレクトリ)
+  "" を起点に unite.vim で file_recして、プロジェクトのファイル一覧を出力
+  "nmap <silent> [unite]p :<C-u>call <SID>unite_project('-start-insert')<CR>
+  "function! s:unite_project(...)
+  "  let opts = (a:0 ? join(a:000, ' ') : '')
+  "  let dir = unite#util#path2project_directory(expand('%'))
+  "  execute 'Unite' opts 'file_rec:' . dir
+  "endfunction
+  
+  "uniteを開いている間のキーマッピング
+  autocmd FileType unite call s:unite_my_settings()
+  function! s:unite_my_settings()
+  
+  	"ESCでuniteを終了
+  	nmap <buffer> <ESC> <Plug>(unite_exit)
+  
+  	"入力モードのときjjでノーマルモードに移動
+  	imap <buffer> jj <Plug>(unite_insert_leave)
+  	imap <buffer> kk <Plug>(unite_insert_leave)
+  
+  	"入力モードのときctrl+wでバックスラッシュも削除
+  	imap <buffer> <C-w> <Plug>(unite_delete_backward_path)
+  
+  	"ctrl+jで縦に分割して開く
+  	nmap <silent> <buffer> <expr> <C-j> unite#do_action('split')
+  	inoremap <silent> <buffer> <expr> <C-j> unite#do_action('split')
+  
+  	"ctrl+lで横に分割して開く
+  	nmap <silent> <buffer> <expr> <C-l> unite#do_action('vsplit')
+  	inoremap <silent> <buffer> <expr> <C-l> unite#do_action('vsplit')
+  
+  	"ctrl+oでその場所に開く
+  	nmap <silent> <buffer> <expr> <C-o> unite#do_action('open')
+  	inoremap <silent> <buffer> <expr> <C-o> unite#do_action('open')
+  
+  endfunction
+
 
   " sugest
   " neocompleteは、neovimでdeopleteに移行
@@ -583,39 +649,40 @@ let s:dein_enabled  = 0
 "if v:version >= 704 && !has('win32')
 if !has('win32')
   let s:dein_enabled = 1
-                                                                                          
-  " Required:                                                                             
-  set runtimepath+=/root/.cache/dein/repos/github.com/Shougo/dein.vim                     
-                                                                                          
-  " Required:                                                                             
-  if dein#load_state('/root/.cache/dein')                                                 
-    call dein#begin('/root/.cache/dein')                                                  
-                                                                                          
-    " Let dein manage dein                                                                
-    " Required:                                                                           
-    call dein#add('/root/.cache/dein/repos/github.com/Shougo/dein.vim')                   
-                                                                                          
-    " Add or remove your plugins here:                                                    
-    call dein#add('Shougo/neosnippet.vim')                                                
-    call dein#add('Shougo/neosnippet-snippets')                                           
-    "call dein#add('w0ng/vim-hybrid')                                           
-                                                                                          
-    " You can specify revision/branch/tag.                                                
-    call dein#add('Shougo/vimshell', { 'rev': '3787e5' })                                 
-                                                                                          
-    " Required:                                                                           
-    call dein#end()                                                                       
-    call dein#save_state()                                                                
-  endif                                                                                   
-                                                                                          
-  " Required:                                                                             
-  filetype plugin indent on                                                               
-  syntax enable                                                                           
-                                                                                          
-  " If you want to install not installed plugins on startup.                              
-  if dein#check_install()                                                                
-    call dein#install()                                                                  
-  endif                                                                                  
+  "dein Scripts-----------------------------
+  set runtimepath+=/home/enxajt/.cache/dein//repos/github.com/Shougo/dein.vim
+  if dein#load_state('/home/enxajt/.cache/dein/')
+    call dein#begin('/home/enxajt/.cache/dein/')
+    call dein#add('/home/enxajt/.cache/dein//repos/github.com/Shougo/dein.vim')
+
+    " Add or remove your plugins here:
+    call dein#add('Shougo/neosnippet.vim')
+    call dein#add('Shougo/neosnippet-snippets')
+    call dein#add('shougo/neocomplete.vim')
+    call dein#add('shougo/neco-syntax')
+
+    call dein#add('sgur/unite-everything')
+    call dein#add('shougo/neomru.vim')
+    call dein#add('shougo/unite.vim')
+    call dein#add('shougo/neoyank.vim')
+    call dein#add('shougo/unite-outline')
+
+    " You can specify revision/branch/tag.
+    call dein#add('Shougo/vimshell', { 'rev': '3787e5' })
+
+    call dein#end()
+    call dein#save_state()
+  endif
+
+  " Required:
+  filetype plugin indent on
+  syntax enable
+
+  " If you want to install not installed plugins on startup.
+  if dein#check_install()
+    call dein#install()
+  endif
+  "End dein Scripts-------------------------
 endif                                                                                   
 
 ""---------------------------------------------------------------
@@ -785,80 +852,7 @@ if has('conceal')
   set conceallevel=2 concealcursor=i
 endif
 
-"---------------------------------------------------------------
-" unite
-"
-"インサートモードで開始
-let g:unite_enable_start_insert = 1
 
-
-""---------------------------------------------------------------
-"" key-mappings (unite)
-""
-" 水平分割なら下に、垂直分割なら右に開く
-let g:unite_split_rule = 'botright'
-
-"nmap [unite] <Nop>
-nmap <C-l> [unite]
-
-"nmap <silent> [unite]f :<C-u>UniteWithBufferDir -buffer-name=files file<CR>
-nmap <silent> [unite]o :<C-u>Unite -vertical -winwidth=40 outline<CR>
-"nmap <silent> [unite]b :<C-u>Unite buffer<CR>
-"nmap <silent> [unite]r :<C-u>Unite -buffer-name=register register<CR>
-
-" BOOKMARK
-"nmap <silent> [unite]c :<C-u>Unite bookmark<CR>
-"nmap <silent> [unite]a :<C-u>UniteBookmarkAdd<CR>
-
-" most recently viewed files
-" 保存数
-let g:unite_source_file_mru_limit = 50
-"file_mruの表示フォーマットを指定。空にすると表示スピードが高速化される
-let g:unite_source_file_mru_filename_format = ''
-nmap <silent> [unite]mt :<C-u>Unite file_mru -default-action=tabopen<CR>
-nmap <silent> [unite]mv :<C-u>Unite file_mru -default-action=vsplit<CR>
-nmap <silent> [unite]ms :<C-u>Unite file_mru -default-action=split<CR>
-"nnoremap <leader>frt :Unite -quick-match file_mru -default-action=tabopen<CR>
-"nnoremap <leader>frh :Unite -quick-match file_mru -default-action=split<CR>
-"nnoremap <leader>frf :Unite -quick-match file_mru<CR>
-
-"" 現在編集中のファイルが所属するプロジェクトのトップディレクトリ
-"" (.git があったり Makefile があったり、configure があったりするディレクトリ)
-"" を起点に unite.vim で file_recして、プロジェクトのファイル一覧を出力
-"nmap <silent> [unite]p :<C-u>call <SID>unite_project('-start-insert')<CR>
-"function! s:unite_project(...)
-"  let opts = (a:0 ? join(a:000, ' ') : '')
-"  let dir = unite#util#path2project_directory(expand('%'))
-"  execute 'Unite' opts 'file_rec:' . dir
-"endfunction
-
-"uniteを開いている間のキーマッピング
-autocmd FileType unite call s:unite_my_settings()
-function! s:unite_my_settings()
-
-	"ESCでuniteを終了
-	nmap <buffer> <ESC> <Plug>(unite_exit)
-
-	"入力モードのときjjでノーマルモードに移動
-	imap <buffer> jj <Plug>(unite_insert_leave)
-	imap <buffer> kk <Plug>(unite_insert_leave)
-
-	"入力モードのときctrl+wでバックスラッシュも削除
-	imap <buffer> <C-w> <Plug>(unite_delete_backward_path)
-
-	"ctrl+jで縦に分割して開く
-	nmap <silent> <buffer> <expr> <C-j> unite#do_action('split')
-	inoremap <silent> <buffer> <expr> <C-j> unite#do_action('split')
-
-	"ctrl+lで横に分割して開く
-	nmap <silent> <buffer> <expr> <C-l> unite#do_action('vsplit')
-	inoremap <silent> <buffer> <expr> <C-l> unite#do_action('vsplit')
-
-	"ctrl+oでその場所に開く
-	nmap <silent> <buffer> <expr> <C-o> unite#do_action('open')
-	inoremap <silent> <buffer> <expr> <C-o> unite#do_action('open')
-
-endfunction
 
 "---------------------------------------------------------------
 " key-mappings (vimfiler)
