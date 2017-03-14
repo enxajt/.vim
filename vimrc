@@ -8,14 +8,6 @@ if &compatible
 endif
 
 "---------------------------------------------------------------
-" コンソール版で環境変数$DISPLAY
-" が設定されていると起動が遅くなる件へ対応
-"
-if !has('gui_running') && has('xterm_clipboard')
-  set clipboard=exclude:cons\\\|linux\\\|cygwin\\\|rxvt\\\|screen
-endif
-
-"---------------------------------------------------------------
 " win,mac対応
 "
 " WinではPATHに$VIMが含まれていないときにexeを見つけ出せないので修正
@@ -439,9 +431,15 @@ set formatoptions+=mM
 " ビジュアル選択(D&D他)を自動的にクリップボードへ (:help guioptions_a)
 "set guioptions+=a
 
+" コンソール版で環境変数$DISPLAYが設定されていると起動が遅くなる件へ対応
+"if !has('gui_running') && has('xterm_clipboard')
+"  set clipboard=exclude:cons\\\|linux\\\|cygwin\\\|rxvt\\\|screen
+"endif
+
 "通常は無名レジスタに入るヤンク/カットが、*レジスタにも入るようになる
 "*レジスタにデータを入れると、クリップボードにデータが入る
-set clipboard+=unnamed
+set clipboard=unnamed
+set clipboard+=unnamedplus
 
 " Capture
 command!
