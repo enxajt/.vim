@@ -92,16 +92,18 @@ if has('autocmd')
 endif
 
 "---------------------------------------------------------------
-" file(md, coffee)
+" file(md)
 "
 let g:vim_markdown_folding_disabled = 1
 "let g:vim_markdown_folding_level = 6
 
+"---------------------------------------------------------------
+" file(拡張子)
+"
 ".mdファイルもMarkdown記法として読み込む
 au BufRead,BufNewFile *.md set filetype=markdown
-
+au BufRead,BufNewFile *.ejs set filetype=html
 au BufRead,BufNewFile *.coffee set filetype=javascript
-
 
 "---------------------------------------------------------------
 " file(ファイル名の大文字小文字)
@@ -146,12 +148,13 @@ set t_vb=
 " view (tab, eol)
 "
 " タブや改行を表示 (list or nolist)
-" "tab:>-" とすると、タブが4文字の設定では ">---" となる。
-"      指定されないと、タブは ^I と表示される。
-" trail:文字	行末の空白の表示に使われる文字。
-" 文字 ':' と ',' は使えない。
 set list
-set listchars=tab:>-,trail:.,eol:↲,nbsp:%
+" 指定されないと、タブは ^I と表示される。
+" "tab:>-" とすると、タブが4文字の設定では ">---" となる。
+" trail:行末の空白の表示
+" ':' と ',' は使えない  
+"set listchars=tab:>-,trail:.,eol:↲,nbsp:%
+set listchars=tab:▸\ ,eol:↲,nbsp:%
 
 " " 'Yggdroot/indentLine'
 " "let g:indentLine_faster = 1
@@ -530,70 +533,6 @@ call neobundle#begin(expand($VIM.'/bundle'))
   NeoBundle 'shougo/unite-outline'
   let g:unite_enable_start_insert = 1
 
-  " 水平分割なら下に、垂直分割なら右に開く
-  let g:unite_split_rule = 'botright'
-  
-  "nmap [unite] <Nop>
-  nmap <C-l> [unite]
-  
-  "nmap <silent> [unite]f :<C-u>UniteWithBufferDir -buffer-name=files file<CR>
-  nmap <silent> [unite]o :<C-u>Unite -vertical -winwidth=40 outline<CR>
-  "nmap <silent> [unite]b :<C-u>Unite buffer<CR>
-  "nmap <silent> [unite]r :<C-u>Unite -buffer-name=register register<CR>
-  
-  " BOOKMARK
-  "nmap <silent> [unite]c :<C-u>Unite bookmark<CR>
-  "nmap <silent> [unite]a :<C-u>UniteBookmarkAdd<CR>
-  
-  " most recently viewed files
-  let g:unite_source_file_mru_limit = 50
-  "file_mruの表示フォーマットを指定。空にすると表示スピードが高速化される
-  let g:unite_source_file_mru_filename_format = ''
-  nmap <silent> [unite]mt :<C-u>Unite file_mru -default-action=tabopen<CR>
-  nmap <silent> [unite]mv :<C-u>Unite file_mru -default-action=vsplit<CR>
-  nmap <silent> [unite]ms :<C-u>Unite file_mru -default-action=split<CR>
-  "nnoremap <leader>frt :Unite -quick-match file_mru -default-action=tabopen<CR>
-  "nnoremap <leader>frh :Unite -quick-match file_mru -default-action=split<CR>
-  "nnoremap <leader>frf :Unite -quick-match file_mru<CR>
-  
-  "" 現在編集中のファイルが所属するプロジェクトのトップディレクトリ
-  "" (.git があったり Makefile があったり、configure があったりするディレクトリ)
-  "" を起点に unite.vim で file_recして、プロジェクトのファイル一覧を出力
-  "nmap <silent> [unite]p :<C-u>call <SID>unite_project('-start-insert')<CR>
-  "function! s:unite_project(...)
-  "  let opts = (a:0 ? join(a:000, ' ') : '')
-  "  let dir = unite#util#path2project_directory(expand('%'))
-  "  execute 'Unite' opts 'file_rec:' . dir
-  "endfunction
-  
-  "uniteを開いている間のキーマッピング
-  autocmd FileType unite call s:unite_my_settings()
-  function! s:unite_my_settings()
-  
-  	"ESCでuniteを終了
-  	nmap <buffer> <ESC> <Plug>(unite_exit)
-  
-  	"入力モードのときjjでノーマルモードに移動
-  	imap <buffer> jj <Plug>(unite_insert_leave)
-  	imap <buffer> kk <Plug>(unite_insert_leave)
-  
-  	"入力モードのときctrl+wでバックスラッシュも削除
-  	imap <buffer> <C-w> <Plug>(unite_delete_backward_path)
-  
-  	"ctrl+jで縦に分割して開く
-  	nmap <silent> <buffer> <expr> <C-j> unite#do_action('split')
-  	inoremap <silent> <buffer> <expr> <C-j> unite#do_action('split')
-  
-  	"ctrl+lで横に分割して開く
-  	nmap <silent> <buffer> <expr> <C-l> unite#do_action('vsplit')
-  	inoremap <silent> <buffer> <expr> <C-l> unite#do_action('vsplit')
-  
-  	"ctrl+oでその場所に開く
-  	nmap <silent> <buffer> <expr> <C-o> unite#do_action('open')
-  	inoremap <silent> <buffer> <expr> <C-o> unite#do_action('open')
-  
-  endfunction
-
 
   " sugest
   " neocompleteは、neovimでdeopleteに移行
@@ -648,16 +587,26 @@ let s:dein_enabled  = 0
 if !has('win32')
   let s:dein_enabled = 1
   "dein Scripts-----------------------------
-  set runtimepath+=/home/enxajt/.cache/dein//repos/github.com/Shougo/dein.vim
+  set runtimepath+=/home/enxajt/.cache/dein/repos/github.com/Shougo/dein.vim
   if dein#load_state('/home/enxajt/.cache/dein/')
     call dein#begin('/home/enxajt/.cache/dein/')
-    call dein#add('/home/enxajt/.cache/dein//repos/github.com/Shougo/dein.vim')
+    call dein#add('/home/enxajt/.cache/dein/repos/github.com/Shougo/dein.vim')
 
     " Add or remove your plugins here:
     call dein#add('Shougo/neosnippet.vim')
     call dein#add('Shougo/neosnippet-snippets')
     call dein#add('shougo/neocomplete.vim')
     call dein#add('shougo/neco-syntax')
+
+    " syntax, color, indent
+    "call dein#add('w0ng/vim-hybrid')
+    "call dein#add('vimperator/vimperator')
+    "call dein#add('hail2u/vim-css3-syntax')
+    "call dein#add('othree/html5.vim')
+    call dein#add('plasticboy/vim-markdown')
+    call dein#add('Yggdroot/indentLine')
+    call dein#add('pangloss/vim-javascript')
+    call dein#add('othree/yajs.vim')
 
     call dein#add('sgur/unite-everything')
     call dein#add('shougo/neomru.vim')
@@ -773,7 +722,8 @@ if has('win32')
   nmap <Space>. :<C-u>tabedit $VIM/_gvimrc<CR>
   nmap <Space>, :<C-u>tabedit $VIM/_vimrc<CR>
 elseif has('unix')
-  nmap <Space>, :<C-u>tabedit /root/neovim/share/nvim/sysinit.vim<CR>
+  "nmap <Space>, :<C-u>tabedit /root/neovim/share/nvim/sysinit.vim<CR>
+  nmap <Space>, :<C-u>tabedit ~/.vim/vimrc<CR>
 endif
 
 nmap <C-o><C-o> <ESC>i<C-r>=strftime(" %Y.%m.%d %H:%M:%S ")<CR><CR>
@@ -850,9 +800,76 @@ if has('conceal')
   set conceallevel=2 concealcursor=i
 endif
 
-
+"---------------------------------------------------------------
+" key-mappings (unite)
+"
+  " 水平分割なら下に、垂直分割なら右に開く
+  let g:unite_split_rule = 'botright'
+  
+  "nmap [unite] <Nop>
+  nmap <C-l> [unite]
+  
+  "nmap <silent> [unite]f :<C-u>UniteWithBufferDir -buffer-name=files file<CR>
+  nmap <silent> [unite]o :<C-u>Unite -vertical -winwidth=40 outline<CR>
+  "nmap <silent> [unite]b :<C-u>Unite buffer<CR>
+  "nmap <silent> [unite]r :<C-u>Unite -buffer-name=register register<CR>
+  
+  " BOOKMARK
+  "nmap <silent> [unite]c :<C-u>Unite bookmark<CR>
+  "nmap <silent> [unite]a :<C-u>UniteBookmarkAdd<CR>
+  
+  " most recently viewed files
+  let g:unite_source_file_mru_limit = 50
+  "file_mruの表示フォーマットを指定。空にすると表示スピードが高速化される
+  let g:unite_source_file_mru_filename_format = ''
+  nmap <silent> [unite]mt :<C-u>Unite file_mru -default-action=tabopen<CR>
+  nmap <silent> [unite]mv :<C-u>Unite file_mru -default-action=vsplit<CR>
+  nmap <silent> [unite]ms :<C-u>Unite file_mru -default-action=split<CR>
+  "nnoremap <leader>frt :Unite -quick-match file_mru -default-action=tabopen<CR>
+  "nnoremap <leader>frh :Unite -quick-match file_mru -default-action=split<CR>
+  "nnoremap <leader>frf :Unite -quick-match file_mru<CR>
+  
+  "" 現在編集中のファイルが所属するプロジェクトのトップディレクトリ
+  "" (.git があったり Makefile があったり、configure があったりするディレクトリ)
+  "" を起点に unite.vim で file_recして、プロジェクトのファイル一覧を出力
+  "nmap <silent> [unite]p :<C-u>call <SID>unite_project('-start-insert')<CR>
+  "function! s:unite_project(...)
+  "  let opts = (a:0 ? join(a:000, ' ') : '')
+  "  let dir = unite#util#path2project_directory(expand('%'))
+  "  execute 'Unite' opts 'file_rec:' . dir
+  "endfunction
+  
+  "uniteを開いている間のキーマッピング
+  autocmd FileType unite call s:unite_my_settings()
+  function! s:unite_my_settings()
+  
+  	"ESCでuniteを終了
+  	nmap <buffer> <ESC> <Plug>(unite_exit)
+  
+  	"入力モードのときjjでノーマルモードに移動
+  	imap <buffer> jj <Plug>(unite_insert_leave)
+  	imap <buffer> kk <Plug>(unite_insert_leave)
+  
+  	"入力モードのときctrl+wでバックスラッシュも削除
+  	imap <buffer> <C-w> <Plug>(unite_delete_backward_path)
+  
+  	"ctrl+jで縦に分割して開く
+  	nmap <silent> <buffer> <expr> <C-j> unite#do_action('split')
+  	inoremap <silent> <buffer> <expr> <C-j> unite#do_action('split')
+  
+  	"ctrl+lで横に分割して開く
+  	nmap <silent> <buffer> <expr> <C-l> unite#do_action('vsplit')
+  	inoremap <silent> <buffer> <expr> <C-l> unite#do_action('vsplit')
+  
+  	"ctrl+oでその場所に開く
+  	nmap <silent> <buffer> <expr> <C-o> unite#do_action('open')
+  	inoremap <silent> <buffer> <expr> <C-o> unite#do_action('open')
+  
+  endfunction
 
 "---------------------------------------------------------------
 " key-mappings (vimfiler)
 "
 "noremap <C-r>t :VimFilerCurrentDir -split -simple -winwidth=45 -no-quit<ENTER>
+"
+set term=screen-256color
