@@ -13,7 +13,8 @@ sudo apt-get install -y lua5.2 liblua5.2-dev luajit libluajit-5.1 python-dev pyt
 
 # install vim
 mkdir -p /home/enxajt/.cache
-[ ! -e ~/.cache/install-vim ] && git clone --depth 1 https://github.com/vim/vim.git ~/.cache/install-vim && cd ~/.cache/install-vim/src
+[ ! -e ~/.cache/install-vim ] && git clone --depth 1 https://github.com/vim/vim.git ~/.cache/install-vim
+cd ~/.cache/install-vim/src
 /configure --prefix=/usr/local \
 --with-features=huge \
 --enable-multibyte \
