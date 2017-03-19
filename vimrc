@@ -872,4 +872,4 @@ endif
 "
 "noremap <C-r>t :VimFilerCurrentDir -split -simple -winwidth=45 -no-quit<ENTER>
 "
-set term=screen-256color
+"set term=screen-256color
