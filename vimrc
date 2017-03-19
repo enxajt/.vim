@@ -610,7 +610,7 @@ if !has('win32')
 
     call dein#add('sgur/unite-everything')
     call dein#add('shougo/neomru.vim')
-    call dein#add('shougo/unite.vim')
+    call dein#add('s )
     call dein#add('shougo/neoyank.vim')
     call dein#add('shougo/unite-outline')
 
