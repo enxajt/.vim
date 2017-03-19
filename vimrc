@@ -298,7 +298,7 @@ hi clear CursorLine
 
 "---------------------------------------------------------------
 " view (コンソールでのカラー表示)
-"(暫定的にUNIX専用)
+"
 if has('unix') && !has('gui_running')
   let s:uname = system('uname')
   if s:uname =~? "linux"
@@ -315,6 +315,21 @@ if has('unix') && !has('gui_running')
     set term=builtin_xterm
   endif
   unlet s:uname
+endif
+
+"---------------------------------------------------------------
+" view (diff)
+" http://qiita.com/takaakikasai/items/3d4f8a4867364a46dfa3
+if has('unix') && !has('gui_running')
+  set diffexpr=MyDiff()
+  function MyDiff()
+    let opt = ""
+    if &diffopt =~ "iwhite"
+      let opt = opt . "-b "
+    endif
+    silent execute "!git-diff-normal-format " . opt . v:fname_in . " " . v:fname_new . " > " . v:fname_out
+    redraw!
+  endfunction
 endif
 
 "---------------------------------------------------------------
