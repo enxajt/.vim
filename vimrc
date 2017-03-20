@@ -196,9 +196,7 @@ set shiftwidth=2
 set smarttab
 
 "---------------------------------------------------------------
-" view (highlight) 
-"
-"全角スペースをハイライト表示
+" view (全角スペースをハイライト)
 function! ZenkakuSpace()
     highlight ZenkakuSpace cterm=reverse ctermfg=grey gui=reverse guifg=#2F4F4F
 endfunction
@@ -267,9 +265,10 @@ set statusline+=%4l/%L,%c%V%4P
 "---------------------------------------------------------------
 " view (color) 
 "
-
 "colorschemeコマンドを実行する前に設定する
 set t_co=256
+"set term=screen-256color
+set termguicolors
 
 set virtualedit=block
 if has('nvim')
@@ -546,11 +545,8 @@ call neobundle#begin(expand($VIM.'/bundle'))
   NeoBundle 'shougo/unite.vim'
   NeoBundle 'shougo/neoyank.vim'
   NeoBundle 'shougo/unite-outline'
-  let g:unite_enable_start_insert = 1
-
 
   " sugest
-  " neocompleteは、neovimでdeopleteに移行
   NeoBundle 'shougo/neocomplete.vim'
   NeoBundle 'shougo/neco-syntax'
   NeoBundle 'shougo/neosnippet'
@@ -608,13 +604,15 @@ if !has('win32')
     call dein#add('/home/enxajt/.cache/dein/repos/github.com/Shougo/dein.vim')
 
     " Add or remove your plugins here:
+    call dein#add('Shougo/vimproc.vim', {'build' : 'make'})
+    call dein#add('Shougo/dein.vim')
+    call dein#add('Shougo/deoplete.nvim')
     call dein#add('Shougo/neosnippet.vim')
     call dein#add('Shougo/neosnippet-snippets')
-    call dein#add('shougo/neocomplete.vim')
     call dein#add('shougo/neco-syntax')
 
     " syntax, color, indent
-    "call dein#add('w0ng/vim-hybrid')
+    call dein#add('w0ng/vim-hybrid')
     "call dein#add('vimperator/vimperator')
     "call dein#add('hail2u/vim-css3-syntax')
     "call dein#add('othree/html5.vim')
@@ -623,12 +621,16 @@ if !has('win32')
     call dein#add('pangloss/vim-javascript')
     call dein#add('othree/yajs.vim')
 
+    call dein#add('Shougo/denite.nvim')
+    call dein#add('Shougo/unite.vim')
+    "call dein#add('Shougo/unite.vim', {
+    "      \ 'depends': ['vimproc'],
+    "      \ 'on_cmd': ['Unite'],
+    "      \ 'lazy': 1})
     call dein#add('sgur/unite-everything')
-    call dein#add('shougo/neomru.vim')
-    call dein#add('s )
-    call dein#add('shougo/neoyank.vim')
-    call dein#add('shougo/unite-outline')
-
+    call dein#add('Shougo/neomru.vim')
+    call dein#add('Shougo/neoyank.vim')
+    call dein#add('Shougo/unite-outline')
     " You can specify revision/branch/tag.
     call dein#add('Shougo/vimshell', { 'rev': '3787e5' })
 
@@ -648,80 +650,86 @@ if !has('win32')
 endif                                                                                   
 
 ""---------------------------------------------------------------
+"" Shougo/deoplete.nvim
+let g:deoplete#enable_at_startup = 1
+
+""---------------------------------------------------------------
 "" neocomplete
 ""
 "Note: This option must be set in .vimrc(_vimrc).  NOT IN .gvimrc(_gvimrc)!
 " Disable AutoComplPop.
-let g:acp_enableAtStartup = 0
-" Use neocomplete.
-let g:neocomplete#enable_at_startup = 1
-" Use smartcase.
-let g:neocomplete#enable_smart_case = 1
-" Set minimum syntax keyword length.
-let g:neocomplete#sources#syntax#min_keyword_length = 3
-
-" Define dictionary.
-let g:neocomplete#sources#dictionary#dictionaries = {
-    \ 'default' : '',
-    \ 'vimshell' : $HOME.'/.vimshell_hist',
-    \ 'scheme' : $HOME.'/.gosh_completions',
-    \ '_' : $vimdir.'/dicts/engtojpn.dict',
-        \ }
-
-" Define keyword.
-if !exists('g:neocomplete#keyword_patterns')
-    let g:neocomplete#keyword_patterns = {}
+if v:version < 704 || has('win64')
+  let g:acp_enableAtStartup = 0
+  " Use neocomplete.
+  let g:neocomplete#enable_at_startup = 1
+  " Use smartcase.
+  let g:neocomplete#enable_smart_case = 1
+  " Set minimum syntax keyword length.
+  let g:neocomplete#sources#syntax#min_keyword_length = 3
+  
+  " Define dictionary.
+  let g:neocomplete#sources#dictionary#dictionaries = {
+      \ 'default' : '',
+      \ 'vimshell' : $HOME.'/.vimshell_hist',
+      \ 'scheme' : $HOME.'/.gosh_completions',
+      \ '_' : $vimdir.'/dicts/engtojpn.dict',
+          \ }
+  
+  " Define keyword.
+  if !exists('g:neocomplete#keyword_patterns')
+      let g:neocomplete#keyword_patterns = {}
+  endif
+  let g:neocomplete#keyword_patterns['default'] = '\h\w*'
+  
+  " Plugin key-mappings.
+  inoremap <expr><C-g>     neocomplete#undo_completion()
+  inoremap <expr><C-l>     neocomplete#complete_common_string()
+  
+  " Recommended key-mappings.
+  " <CR>: close popup and save indent.
+  inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+  function! s:my_cr_function()
+    return (pumvisible() ? "\<C-y>" : "" ) . "\<CR>"
+    " For no inserting <CR> key.
+    "return pumvisible() ? "\<C-y>" : "\<CR>"
+  endfunction
+  " <TAB>: completion.
+  inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+  " <C-h>, <BS>: close popup and delete backword char.
+  inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
+  inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
+  " Close popup by <Space>.
+  "inoremap <expr><Space> pumvisible() ? "\<C-y>" : "\<Space>"
+  
+  " AutoComplPop like behavior.
+  "let g:neocomplete#enable_auto_select = 1
+  
+  " Shell like behavior(not recommended).
+  "set completeopt+=longest
+  "let g:neocomplete#enable_auto_select = 1
+  "let g:neocomplete#disable_auto_complete = 1
+  "inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
+  
+  " Enable omni completion.
+  autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+  autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+  autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+  autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+  autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+  
+  " Enable heavy omni completion.
+  if !exists('g:neocomplete#sources#omni#input_patterns')
+    let g:neocomplete#sources#omni#input_patterns = {}
+  endif
+  "let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+  "let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
+  "let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
+  
+  " For perlomni.vim setting.
+  " https://github.com/c9s/perlomni.vim
+  let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
 endif
-let g:neocomplete#keyword_patterns['default'] = '\h\w*'
-
-" Plugin key-mappings.
-inoremap <expr><C-g>     neocomplete#undo_completion()
-inoremap <expr><C-l>     neocomplete#complete_common_string()
-
-" Recommended key-mappings.
-" <CR>: close popup and save indent.
-inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
-function! s:my_cr_function()
-  return (pumvisible() ? "\<C-y>" : "" ) . "\<CR>"
-  " For no inserting <CR> key.
-  "return pumvisible() ? "\<C-y>" : "\<CR>"
-endfunction
-" <TAB>: completion.
-inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-" <C-h>, <BS>: close popup and delete backword char.
-inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
-inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
-" Close popup by <Space>.
-"inoremap <expr><Space> pumvisible() ? "\<C-y>" : "\<Space>"
-
-" AutoComplPop like behavior.
-"let g:neocomplete#enable_auto_select = 1
-
-" Shell like behavior(not recommended).
-"set completeopt+=longest
-"let g:neocomplete#enable_auto_select = 1
-"let g:neocomplete#disable_auto_complete = 1
-"inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
-
-" Enable omni completion.
-autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-
-" Enable heavy omni completion.
-if !exists('g:neocomplete#sources#omni#input_patterns')
-  let g:neocomplete#sources#omni#input_patterns = {}
-endif
-"let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
-"let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
-"let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
-
-" For perlomni.vim setting.
-" https://github.com/c9s/perlomni.vim
-let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
-
+  
 ""---------------------------------------------------------------
 "" Alignを日本語環境で使用するための設定
 ""
@@ -816,12 +824,28 @@ if has('conceal')
 endif
 
 "---------------------------------------------------------------
+" unite
+"
+if v:version < 704 || has('win64')
+  let g:unite_enable_start_insert = 1
+endif
+" 水平分割なら下に、垂直分割なら右に開く
+let g:unite_split_rule = 'botright'
+
+"---------------------------------------------------------------
+" key-mappings (denite)
+"
+if !has('win32')
+  noremap [denite] <Nop>
+  nmap <C-l> [denite]
+  nnoremap [denite]mt :<C-u>Denite file_mru -default-action=tabopen<CR>
+  nmap <silent> [denite]o :<C-u>Denite outline<CR>
+endif
+
+"---------------------------------------------------------------
 " key-mappings (unite)
 "
-  " 水平分割なら下に、垂直分割なら右に開く
-  let g:unite_split_rule = 'botright'
-  
-  "nmap [unite] <Nop>
+"if v:version < 704 || has('win64')
   nmap <C-l> [unite]
   
   "nmap <silent> [unite]f :<C-u>UniteWithBufferDir -buffer-name=files file<CR>
@@ -881,10 +905,4 @@ endif
   	inoremap <silent> <buffer> <expr> <C-o> unite#do_action('open')
   
   endfunction
-
-"---------------------------------------------------------------
-" key-mappings (vimfiler)
-"
-"noremap <C-r>t :VimFilerCurrentDir -split -simple -winwidth=45 -no-quit<ENTER>
-"
-"set term=screen-256color
+"endif
