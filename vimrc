@@ -369,7 +369,6 @@ nmap <Up>   gk
  set confirm
 
 " Auto save
-set autowrite
 set updatetime=1000
 function! s:AutoWriteIfPossible()
   if &modified && !&readonly && bufname('%') !=# '' && &buftype ==# '' && expand("%") !=# ''
@@ -381,9 +380,6 @@ augroup AutoWrite
   autocmd CursorHold * call s:AutoWriteIfPossible()
   autocmd CursorHoldI * call s:AutoWriteIfPossible()
 augroup END
-
-set backup
-let &backupdir=$VIMDIR."/backup" 
 
 "---------------------------------------------------------------
 " search
