@@ -24,6 +24,7 @@ endif
 " file, directly 
 let $VIMDIR = $HOME."/.vim"
 "=の前後にスペースは入れない
+set backup
 let &backupdir=$VIMDIR."/backup" 
 let &directory=$VIMDIR."/swp" 
 let &undodir=$VIMDIR."/undo"
@@ -381,30 +382,8 @@ augroup AutoWrite
   autocmd CursorHoldI * call s:AutoWriteIfPossible()
 augroup END
 
-" auto backup
 set backup
-if empty($XDG_CACHE_HOME)
-    let $XDG_CACHE_HOME = $HOME . '/.cache'
-endif
-let $VIM_CACHE_DIR = expand('$XDG_CACHE_HOME/vim')
-augroup backup
-  autocmd!
-  autocmd BufWritePre,FileWritePre,FileAppendPre * call UpdateBackupFile(expand('%'))
-  function! UpdateBackupFile(file)
-    let dir = fnamemodify(a:file, ':p:h')
-    " Windowsのドライブ名を置換 (e.g. C: -> /C/)
-    let dir = substitute(dir, '\v\c^([a-z]):', '/\1/' , '')
-    let todir = expand('$VIM_CACHE_DIR/backup') . dir
-    if !isdirectory(todir)
-      call mkdir(todir, 'p')
-    endif
-    let &backupdir = todir
-    let &backupext = '-' . strftime("%Y%m%d_%H%M%S")
-  endfunction
-augroup END
-
-" Enable use of the mouse for all modes
-"set mouse=a
+let &backupdir=$VIMDIR."/backup" 
 
 "---------------------------------------------------------------
 " search
