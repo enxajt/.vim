@@ -101,7 +101,7 @@ let g:vim_markdown_folding_disabled = 1
 " file(拡張子)
 "
 ".mdファイルもMarkdown記法として読み込む
-au BufRead,BufNewFile *.md set filetype=markdown
+au BufRead,BufNewFile *.md,*.conf set filetype=markdown
 au BufRead,BufNewFile *.ejs set filetype=html
 au BufRead,BufNewFile *.coffee set filetype=javascript
 
@@ -267,8 +267,6 @@ set statusline+=%4l/%L,%c%V%4P
 "
 "colorschemeコマンドを実行する前に設定する
 set t_co=256
-"set term=screen-256color
-set termguicolors
 
 set virtualedit=block
 if has('nvim')
@@ -301,8 +299,10 @@ hi clear CursorLine
 if has('unix') && !has('gui_running')
   let s:uname = system('uname')
   if s:uname =~? "linux"
-"   set term=builtin_linux
-"   set term=xterm
+    "set term=builtin_linux
+    "set term=xterm
+    "set term=screen-256color
+    set termguicolors
     let &t_AB="\e[48;5;%dm"
     let &t_AF="\e[38;5;%dm"
   elseif s:uname =~? "freebsd"
@@ -317,7 +317,7 @@ if has('unix') && !has('gui_running')
 endif
 
 "---------------------------------------------------------------
-" view (diff)
+" view (vimdiff)
 " http://qiita.com/takaakikasai/items/3d4f8a4867364a46dfa3
 if has('unix') && !has('gui_running')
   set diffexpr=MyDiff()
@@ -330,6 +330,15 @@ if has('unix') && !has('gui_running')
     redraw!
   endfunction
 endif
+
+"追加行は緑
+highlight DiffAdd    cterm=bold ctermfg=10 ctermbg=22
+"削除行は赤
+highlight DiffDelete cterm=bold ctermfg=10 ctermbg=52
+"変更行は青
+highlight DiffChange cterm=bold ctermfg=10 ctermbg=17
+"変更部分が明るい青
+highlight DiffText   cterm=bold ctermfg=10 ctermbg=21
 
 "---------------------------------------------------------------
 " move
@@ -370,6 +379,28 @@ augroup AutoWrite
   autocmd!
   autocmd CursorHold * call s:AutoWriteIfPossible()
   autocmd CursorHoldI * call s:AutoWriteIfPossible()
+augroup END
+
+" auto backup
+set backup
+if empty($XDG_CACHE_HOME)
+    let $XDG_CACHE_HOME = $HOME . '/.cache'
+endif
+let $VIM_CACHE_DIR = expand('$XDG_CACHE_HOME/vim')
+augroup backup
+  autocmd!
+  autocmd BufWritePre,FileWritePre,FileAppendPre * call UpdateBackupFile(expand('%'))
+  function! UpdateBackupFile(file)
+    let dir = fnamemodify(a:file, ':p:h')
+    " Windowsのドライブ名を置換 (e.g. C: -> /C/)
+    let dir = substitute(dir, '\v\c^([a-z]):', '/\1/' , '')
+    let todir = expand('$VIM_CACHE_DIR/backup') . dir
+    if !isdirectory(todir)
+      call mkdir(todir, 'p')
+    endif
+    let &backupdir = todir
+    let &backupext = '-' . strftime("%Y%m%d_%H%M%S")
+  endfunction
 augroup END
 
 " Enable use of the mouse for all modes
@@ -620,6 +651,7 @@ if !has('win32')
     call dein#add('Yggdroot/indentLine')
     call dein#add('pangloss/vim-javascript')
     call dein#add('othree/yajs.vim')
+    call dein#add('vim-scripts/diffchar.vim')
 
     call dein#add('Shougo/denite.nvim')
     call dein#add('Shougo/unite.vim')
@@ -831,6 +863,8 @@ if v:version < 704 || has('win64')
 endif
 " 水平分割なら下に、垂直分割なら右に開く
 let g:unite_split_rule = 'botright'
+" 水平分割なら上に、垂直分割なら左に開く
+let g:unite_split_rule = 'topleft'
 
 "---------------------------------------------------------------
 " key-mappings (denite)
@@ -906,3 +940,25 @@ endif
   
   endfunction
 "endif
+
+"---------------------------------------------------------------
+" diffchar.vim (vimdiff)
+"
+" F7でトグル
+" vimdiffで起動した際自動的に単語単位の差分(diffchar.vim)を有効
+if &diff
+  augroup enable_diffchar
+    autocmd!
+    autocmd VimEnter * execute "%SDChar"
+  augroup END
+endif
+
+"Char" : 全ての文字間
+"Word1" : \w\+ と隣接する \W の境目
+"Word2" : 非空白文字と空白文字の境目
+"Word3" : \< または \> に該当する境目。vimオプションiskeywordの影響あり
+"逆に言えばiskeywordを設定している場合"Word3"を指定すると便利です。
+"CSV(,)" : カンマ(,)、セミコロン(;)及びタブ文字(\t)による境目
+let g:DiffUnit = "Word3"
+"編集中に差分ハイライトを自動で更新するかどうか 0更新しない 1更新する
+let g:DiffUpdate = 1
