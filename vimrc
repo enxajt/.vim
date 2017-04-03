@@ -727,6 +727,22 @@ nmap <C-o><C-o> <ESC>i<C-r>=strftime(" %Y.%m.%d %H:%M:%S ")<CR><CR>
 
 nnoremap <C-o>u :GundoToggle<CR>
 
+"Turning off Ctrl-Space in Vim
+"if !has('gui_running')
+"endif
+
+let g:CtrlSpaceDefaultMappingKey = "<C-space>"
+"autocmd vimenter * imap <nul> <c-p>
+"autocmd VimEnter * map <Nul> <C-Space>
+"autocmd VimEnter * map! <Nul> <C-Space>
+"autocmd vimenter * imap <nul> <nop>
+"autocmd vimenter * map  <nul> <nop>
+"autocmd vimenter * vmap <nul> <nop>
+"autocmd vimenter * cmap <nul> <nop>
+"autocmd vimenter * nmap <nul> <nop>
+autocmd vimenter * inoremap <C-Space> <nop>
+"autocmd vimenter * inoremap <C-@> <C-Space>
+
 ""---------------------------------------------------------------
 "" key-mappings (junegunn/vim-easy-align)
 ""
