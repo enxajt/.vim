@@ -1,11 +1,11 @@
 [[plugins]]
 repo = 'Shougo/dein.vim'
 
-[[plugins]]
-repo = 'rhysd/nyaovim-markdown-preview'
-hook_add = '''
-  let g:markdown_preview_eager = 1
-'''
+#[[plugins]]
+#repo = 'rhysd/nyaovim-markdown-preview'
+#hook_add = '''
+#  let g:markdown_preview_eager = 1
+#'''
 
 [[plugins]] # カーソル位置のコンテキストに合わせてftを切り替える
 repo = 'osyo-manga/vim-precious'
@@ -46,16 +46,16 @@ on_ft = 'toml'
 #   "let g:solarized_contrast = "normal"| "high" or "low" 
 #   "let g:solarized_visibility= "normal"| "high" or "low" 
 # '''
-# [[plugins]] # bad in cursol
-# repo = 'w0ng/vim-hybrid'
-# hook_add = '''
-#   let g:hybrid_custom_term_colors = 1
-#   "let g:hybrid_reduced_contrast = 0
-#   set background=dark
-#   " colorscheme 設定は source 後に行う必要があるので VimEnter で行う。
-#   " 但し Colorscheme イベントの発生が抑制されないよう nented を付ける。
-#   au MyAutoCmd VimEnter * nested colorscheme hybrid
-# '''
+#[[plugins]] # bad in cursol
+#repo = 'w0ng/vim-hybrid'
+#hook_add = '''
+#  let g:hybrid_custom_term_colors = 1
+#  "let g:hybrid_reduced_contrast = 0
+#  set background=dark
+#  " colorscheme 設定は source 後に行う必要があるので VimEnter で行う。
+#  " 但し Colorscheme イベントの発生が抑制されないよう nented を付ける。
+#  au MyAutoCmd VimEnter * nested colorscheme hybrid
+#'''
 #[[plugins]] # bad in md
 #repo = 'chriskempson/tomorrow-theme/vim'
 #hook_add = '''
@@ -71,12 +71,12 @@ on_ft = 'toml'
 #  \    'background': { 'ctermbg': 'none', '256ctermbg': 'none' },
 #  \}
 #'''
-# [[plugins]]
-# repo = 'aereal/vim-colors-japanesque'
-# hook_add = '''
-#   set background=dark
-#   au MyAutoCmd VimEnter * nested colorscheme japanesque
-# '''
+#[[plugins]]
+#repo = 'aereal/vim-colors-japanesque'
+#hook_add = '''
+#  set background=dark
+#  au MyAutoCmd VimEnter * nested colorscheme japanesque
+#'''
 [[plugins]]
 repo = 'tomasr/molokai'
 hook_add = '''

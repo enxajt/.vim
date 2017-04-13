@@ -434,7 +434,11 @@ set background=dark
 "colorscheme hybrid " (Windows用gvim使用時はgvimrcを編集すること)
 
 function! s:load_after_colors()
-  let color = expand($VIMDIR.'/colors/color_enxajt.vim')
+  if has('win32')
+    let color = expand($VIMDIR.'/colors/color_enxajt.vim')
+  else
+    let color = expand($VIMDIR.'/after.vim')
+  endif
   if filereadable(color)
     execute 'source ' color
   endif
