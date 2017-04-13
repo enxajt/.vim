@@ -77,23 +77,23 @@ on_ft = 'toml'
 #  set background=dark
 #  au MyAutoCmd VimEnter * nested colorscheme japanesque
 #'''
-[[plugins]]
-repo = 'tomasr/molokai'
-hook_add = '''
-  set background=dark
-  "let g:molokai_original = 1
-  "let g:rehash256 = 1
-  au MyAutoCmd VimEnter * nested colorscheme molokai
-'''
+#[[plugins]]
+#repo = 'tomasr/molokai'
+#hook_add = '''
+#  set background=dark
+#  "let g:molokai_original = 1
+#  "let g:rehash256 = 1
+#  au MyAutoCmd VimEnter * nested colorscheme molokai
+#'''
 [[plugins]]
 repo = 'morhetz/gruvbox'
 hook_add = '''
   set background=dark
-  let g:gruvbox_italic=1
+  " let g:gruvbox_italic=1
   au MyAutoCmd VimEnter * nested colorscheme gruvbox
-  " Makes the background transparent
-  au MyAutoCmd VimEnter * nested highlight Normal ctermbg=NONE guibg=NONE
-  au MyAutoCmd VimEnter * nested highlight NonText ctermbg=NONE guibg=NONE
+  " " Makes the background transparent
+  " au MyAutoCmd VimEnter * nested highlight Normal ctermbg=NONE guibg=NONE
+  " au MyAutoCmd VimEnter * nested highlight NonText ctermbg=NONE guibg=NONE
 '''
 
 [[plugins]]
