@@ -422,6 +422,7 @@ set statusline+=%4l/%L,%c%V%4P
 "
 "colorschemeコマンドを実行する前に設定する
 set t_co=256
+syntax on
 
 set virtualedit=block
 if has('nvim')
