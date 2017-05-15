@@ -746,7 +746,8 @@ elseif has('unix')
   nmap <Space>, :<C-u>tabedit ~/.vim/vimrc<CR>
 endif
 
-nmap <C-o><C-o> <ESC>i<C-r>=strftime(" %Y.%m.%d %H:%M:%S ")<CR><CR>
+nmap <C-i>d <ESC>a<C-r>=strftime("%Y.%m.%d")<CR>
+nmap <C-i>t <ESC>a<C-r>=strftime("%H:%M:%S")<CR>
 
 nnoremap <C-o>u :GundoToggle<CR>
 
