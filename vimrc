@@ -180,7 +180,7 @@ let &undodir=$VIMDIR."/undo"
 " file(encode, format)
 "
 " 改行コードの自動認識
-set fileformats=dos,unix,mac
+set fileformats=unix,dos,mac
 
 " textwidthでフォーマットさせたくない
 set formatoptions=q
