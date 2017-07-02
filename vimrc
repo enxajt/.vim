@@ -25,6 +25,7 @@ endif
 let $VIMDIR = $HOME."/.vim"
 "=の前後にスペースは入れない
 set backup
+set undofile
 let &backupdir=$VIMDIR."/backup" 
 let &directory=$VIMDIR."/swp" 
 let &undodir=$VIMDIR."/undo"
@@ -262,6 +263,8 @@ set statusline+=%=
 " %V - カラム番号
 " %P - カーソルの場所 %表示
 set statusline+=%4l/%L,%c%V%4P
+
+"set statusline=%F%m%r%h%w%=\ %{fugitive#statusline()}\ [%{&ff}:%{&fileencoding}]\ [%Y]\ [%04l,%04v]\ [%l/%L]\ %{strftime(\"%Y/%m/%d\ %H:%M:%S\")}
 
 "---------------------------------------------------------------
 " view (color) 
@@ -610,8 +613,8 @@ if !has('win32')
     call dein#add('/home/enxajt/.cache/dein/repos/github.com/Shougo/dein.vim')
 
     " Add or remove your plugins here:
-    call dein#add('Shougo/vimproc.vim', {'build' : 'make'})
     call dein#add('Shougo/dein.vim')
+    call dein#add('Shougo/vimproc.vim', {'build' : 'make'})
     call dein#add('Shougo/deoplete.nvim')
     call dein#add('Shougo/neosnippet.vim')
     call dein#add('Shougo/neosnippet-snippets')
@@ -628,6 +631,11 @@ if !has('win32')
     call dein#add('othree/yajs.vim')
     call dein#add('vim-scripts/diffchar.vim')
 
+    " check javascript
+    call dein#add('neomake/neomake')
+
+    call dein#add('sjl/gundo.vim', { 'autoload': { 'commands': ['GundoToggle'],}})
+
     call dein#add('Shougo/denite.nvim')
     call dein#add('Shougo/unite.vim')
     "call dein#add('Shougo/unite.vim', {
@@ -638,8 +646,10 @@ if !has('win32')
     call dein#add('Shougo/neomru.vim')
     call dein#add('Shougo/neoyank.vim')
     call dein#add('Shougo/unite-outline')
+
     " You can specify revision/branch/tag.
     call dein#add('Shougo/vimshell', { 'rev': '3787e5' })
+
 
     call dein#end()
     call dein#save_state()
@@ -757,6 +767,8 @@ elseif has('unix')
 endif
 
 nmap <C-o><C-o> <ESC>i<C-r>=strftime(" %Y.%m.%d %H:%M:%S ")<CR><CR>
+
+nnoremap <C-o>u :GundoToggle<CR>
 
 ""---------------------------------------------------------------
 "" key-mappings (junegunn/vim-easy-align)
@@ -937,3 +949,22 @@ endif
 let g:DiffUnit = "Word3"
 "編集中に差分ハイライトを自動で更新するかどうか 0更新しない 1更新する
 let g:DiffUpdate = 1
+
+"---------------------------------------------------------------
+" neomake.vim and esling (javascript check)
+"
+if has('unix') && !has('gui_running')
+  " 保存時とenter時にNeomakeする
+  autocmd! BufWritePost,BufEnter * Neomake
+  
+  let g:neomake_javascript_enabled_makers = ['eslint']
+endif
+
+"---------------------------------------------------------------
+" neovim terminal emulator
+"
+if has('unix') && !has('gui_running')
+  set sh=zsh
+  " ESCでcommand modeにする
+  tnoremap <silent> <ESC> <C-\><C-n>
+endif
