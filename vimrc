@@ -8,6 +8,151 @@ if &compatible
 endif
 
 "---------------------------------------------------------------
+" NeoBundle 2016/3/11
+"
+let s:neo_enabled  = 0
+if v:version < 704 || has('win64')
+  let s:neo_enabled = 1
+
+" install to windows
+" mkdir $VIM\bundle
+" git clone https://github.com/Shougo/neobundle.vim bundle\neobundle.vim
+ 
+  " vim起動時のみruntimepathにneobundle.vimを追加
+  if has('vim_starting')
+    if &compatible
+        set compatible
+    endif
+    set runtimepath+=$VIM/bundle/neobundle.vim/
+  endif
+  
+  " neobundle.vimの初期化 " NeoBundleを更新するための設定
+call neobundle#begin(expand($VIM.'/bundle'))
+  NeoBundleFetch 'Shougo/neobundle.vim'
+  
+"  " :h markdown-cheat-sheet
+"  NeoBundle 'gist:hail2u/747628', {
+"         \ 'name': 'markdown-cheat-sheet.jax',
+"         \ 'script_type': 'doc'}
+"  NeoBundle 'junegunn/vim-easy-align'
+"  NeoBundle 'kannokanno/previm'
+"  NeoBundle 'Shougo/vimfiler.vim'
+"  NeoBundle 'tyru/open-browser.vim'
+"let g:netrw_nogx = 1
+"nmap gs <Plug>(openbrowser-smart-search)
+"vmap gs <Plug>(openbrowser-smart-search)
+"command! OpenBrowserCurrent execute "OpenBrowser" "file:///".expand("%:p")
+"
+"  " search
+"  NeoBundle 'haya14busa/incsearch.vim'
+"  NeoBundle 'osyo-manga/vim-anzu'
+"
+"  " syntax, color, indent
+"  NeoBundle 'hail2u/vim-css3-syntax'
+"  NeoBundle 'othree/html5.vim'
+   NeoBundle 'plasticboy/vim-markdown'
+"  NeoBundle 'w0ng/vim-hybrid'
+   NeoBundle 'Yggdroot/indentLine'
+"  NeoBundle 'vimperator/vimperator'
+  
+"  JavaScript syntax hilight
+  NeoBundle 'pangloss/vim-javascript'
+  NeoBundle 'othree/yajs.vim'
+
+  " pluntumlのシンタクスハイライトと:makeコマンド
+  " *.pu か *.uml か *.plantuml 
+  "NeoBundle 'aklt/plantuml-syntax'
+  "letg:plantuml_executable_script = "~/dotfiles/plantuml"
+  "NeoBundle 'vim-scripts/plantuml-syntax'
+
+  " unite
+  NeoBundle 'sgur/unite-everything'
+  NeoBundle 'shougo/neomru.vim'
+  NeoBundle 'shougo/unite.vim'
+  NeoBundle 'shougo/neoyank.vim'
+  NeoBundle 'shougo/unite-outline'
+
+  " sugest
+  NeoBundle 'shougo/neocomplete.vim'
+  NeoBundle 'shougo/neco-syntax'
+  NeoBundle 'shougo/neosnippet'
+  NeoBundle 'shougo/neosnippet-snippets'
+
+"  " autocompletion python
+"  "NeoBundle 'davidhalter/jedi-vim'
+"  "jedi-vimにはclang_completeが必要
+"  "NeoBundle 'git://github.com/Shougo/clang_complete.git'
+"  
+"  "markdownとかで他の言語が埋め込まれてる時に便利になるやつだった気がする
+"  "neobundle 'shougo/context_filetype.vim'
+"  "編集中のソースコードを非同期実行して、結果をみることが出来ます。必須だと思います。
+"  "neobundle 'thinca/vim-quickrun
+"  "ide的な、対応するカッコの自動入力だとかそういうものを設定しやすくしてくれます。個人的にはかなり愛用しているプラグインです。
+"  "neobundle 'kana/vim-smartinput
+"  "オペレーターとテキストオブジェクトをユーザが拡張しやすくしてくれるプラグインです。
+"  "neobundle 'kana/vim-operator-user, kana/vim-textobj-user
+"  "vim-operator-userを利用しています。vimに欠けている「クリップボードの文字列で対象の文字列を入れ替える」という機能を補ってくれます。
+"  "neobundle 'kana/vim-operator-replace
+"  "編集系の中でも最高のプラグインの一つであるsurround.vimの改良版です
+"  "neobundle 'rhysd/vim-operator-surround
+"  
+  call neobundle#end()
+   
+   " 読み込んだプラグインも含め、ファイルタイプの検出、
+   " ファイルタイプ別プラグイン/インデントを有効化する
+   filetype plugin indent on
+   
+   syntax enable
+   
+   " installation check.
+   if neobundle#exists_not_installed_bundles()
+     echomsg 'not installed bundles : ' .
+           \ string(neobundle#get_not_installed_bundle_names())
+     echomsg 'please execute ":neobundleinstall" command.'
+     "finish
+   endif
+   
+   set shellslash
+ 
+ endif
+
+"---------------------------------------------------------------
+" dein
+"
+"if v:version >= 704 && !has('win32')
+let s:dein_enabled  = 0
+if !has('win32')
+  let s:dein_enabled = 1
+
+  " reset augroup
+  augroup MyAutoCmd
+    autocmd!
+  augroup END
+
+  " dein自体の自動インストール
+  let s:cache_home = empty($XDG_CACHE_HOME) ? expand('~/.cache') : $XDG_CACHE_HOME
+  let s:dein_dir = s:cache_home . '/dein'
+  let s:dein_repo_dir = s:dein_dir . '/repos/github.com/Shougo/dein.vim'
+  if !isdirectory(s:dein_repo_dir)
+    call system('git clone https://github.com/Shougo/dein.vim ' . shellescape(s:dein_repo_dir))
+  endif
+  let &runtimepath = s:dein_repo_dir .",". &runtimepath
+  
+  " プラグイン読み込み＆キャッシュ作成
+  let s:toml_file = fnamemodify(expand('<sfile>'), ':h').'/dein.toml'
+  if dein#load_state(s:dein_dir)
+    call dein#begin(s:dein_dir)
+    call dein#load_toml(s:toml_file)
+    call dein#end()
+    call dein#save_state()
+  endif
+  " " 不足プラグインの自動インストール
+  if has('vim_starting') && dein#check_install()
+    call dein#install()
+  endif
+endif                                                                                   
+
+"---------------------------------------------------------------
 " win,mac対応
 "
 " WinではPATHに$VIMが含まれていないときにexeを見つけ出せないので修正
@@ -35,7 +180,7 @@ let &undodir=$VIMDIR."/undo"
 " file(encode, format)
 "
 " 改行コードの自動認識
-set fileformats=dos,unix,mac
+set fileformats=unix,dos,mac
 
 " textwidthでフォーマットさせたくない
 set formatoptions=q
@@ -121,10 +266,17 @@ endif
 "endif
 
 "---------------------------------------------------------------
+" japanese IME
+function! ImInActivate()
+  call system('fcitx-remote -o')
+endfunction
+inoremap <silent> <C-[> <ESC>:call ImInActivate()<CR>
+
+"---------------------------------------------------------------
 " view 
 "
 " バッファを保存しなくても他のバッファを表示できるようにする
- set hidden 
+set hidden 
 
 "起動時のメッセージなし
 set shortmess+=I
@@ -145,6 +297,23 @@ set showmatch
 set visualbell
 " vim will neither flash nor beep.  If visualbell
 set t_vb=
+
+"---------------------------------------------------------------
+" view (全角スペースをハイライト)
+function! ZenkakuSpace()
+    highlight ZenkakuSpace cterm=reverse ctermfg=grey gui=reverse guifg=#2F4F4F
+endfunction
+"darkgrey 文字色っぽい
+"dimgrey 文字色っぽい
+"DarksLateGray 緑っぽい#2F4F4F
+if has('syntax')
+  augroup ZenkakuSpace
+    autocmd!
+    autocmd ColorScheme       * call ZenkakuSpace()
+    autocmd VimEnter,WinEnter * match ZenkakuSpace /　/
+  augroup END
+  call ZenkakuSpace()
+endif
 
 "---------------------------------------------------------------
 " view (tab, eol)
@@ -198,23 +367,6 @@ set shiftwidth=2
 set smarttab
 
 "---------------------------------------------------------------
-" view (全角スペースをハイライト)
-function! ZenkakuSpace()
-    highlight ZenkakuSpace cterm=reverse ctermfg=grey gui=reverse guifg=#2F4F4F
-endfunction
-"darkgrey 文字色っぽい
-"dimgrey 文字色っぽい
-"DarksLateGray 緑っぽい#2F4F4F
-if has('syntax')
-  augroup ZenkakuSpace
-    autocmd!
-    autocmd ColorScheme       * call ZenkakuSpace()
-    autocmd VimEnter,WinEnter * match ZenkakuSpace /　/
-  augroup END
-  call ZenkakuSpace()
-endif
-
-"---------------------------------------------------------------
 " view (command)
 "
 " コマンドライン補完するときに強化されたものを使う(参照 :help wildmenu)
@@ -263,6 +415,7 @@ set statusline+=%=
 " %V - カラム番号
 " %P - カーソルの場所 %表示
 set statusline+=%4l/%L,%c%V%4P
+"set statusline=%F%m%r%h%w%=\ %{fugitive#statusline()}\ [%{&ff}:%{&fileencoding}]\ [%Y]\ [%04l,%04v]\ [%l/%L]\ %{strftime(\"%Y/%m/%d\ %H:%M:%S\")}
 
 "set statusline=%F%m%r%h%w%=\ %{fugitive#statusline()}\ [%{&ff}:%{&fileencoding}]\ [%Y]\ [%04l,%04v]\ [%l/%L]\ %{strftime(\"%Y/%m/%d\ %H:%M:%S\")}
 
@@ -271,6 +424,7 @@ set statusline+=%4l/%L,%c%V%4P
 "
 "colorschemeコマンドを実行する前に設定する
 set t_co=256
+syntax on
 
 set virtualedit=block
 if has('nvim')
@@ -282,7 +436,11 @@ set background=dark
 "colorscheme hybrid " (Windows用gvim使用時はgvimrcを編集すること)
 
 function! s:load_after_colors()
-  let color = expand($VIMDIR.'/colors/color_enxajt.vim')
+  if has('win32')
+    let color = expand($VIMDIR.'/colors/color_enxajt.vim')
+  else
+    let color = expand($VIMDIR.'/after.vim')
+  endif
   if filereadable(color)
     execute 'source ' color
   endif
@@ -490,6 +648,7 @@ function! Capture(cmd)
   1,2delete _
 endfunction
 
+<<<<<<< HEAD
 "---------------------------------------------------------------
 " NeoBundle 2016/3/11
 "
@@ -666,6 +825,8 @@ if !has('win32')
   "End dein Scripts-------------------------
 endif                                                                                   
 
+=======
+>>>>>>> 52fb7313d071ef94461d7f3a219b0cf0fc15126e
 ""---------------------------------------------------------------
 "" Shougo/deoplete.nvim
 let g:deoplete#enable_at_startup = 1
@@ -766,7 +927,25 @@ elseif has('unix')
   nmap <Space>, :<C-u>tabedit ~/.vim/vimrc<CR>
 endif
 
-nmap <C-o><C-o> <ESC>i<C-r>=strftime(" %Y.%m.%d %H:%M:%S ")<CR><CR>
+nmap <C-i>d <ESC>a<C-r>=strftime("%Y.%m.%d")<CR>
+nmap <C-i>t <ESC>a<C-r>=strftime("%H:%M:%S")<CR>
+
+nnoremap <C-o>u :GundoToggle<CR>
+
+"Turning off Ctrl-Space in Vim
+"if !has('gui_running')
+"endif
+let g:CtrlSpaceDefaultMappingKey = "<C-space>"
+"autocmd vimenter * imap <nul> <c-p>
+"autocmd VimEnter * map <Nul> <C-Space>
+"autocmd VimEnter * map! <Nul> <C-Space>
+"autocmd vimenter * imap <nul> <nop>
+"autocmd vimenter * map  <nul> <nop>
+"autocmd vimenter * vmap <nul> <nop>
+"autocmd vimenter * cmap <nul> <nop>
+"autocmd vimenter * nmap <nul> <nop>
+autocmd vimenter * inoremap <C-Space> <nop>
+"autocmd vimenter * inoremap <C-@> <C-Space>
 
 nnoremap <C-o>u :GundoToggle<CR>
 
@@ -845,13 +1024,9 @@ endif
 "---------------------------------------------------------------
 " unite
 "
-if v:version < 704 || has('win64')
-  let g:unite_enable_start_insert = 1
-endif
-" 水平分割なら下に、垂直分割なら右に開く
-let g:unite_split_rule = 'botright'
-" 水平分割なら上に、垂直分割なら左に開く
-let g:unite_split_rule = 'topleft'
+let g:unite_enable_start_insert = 1
+"let g:unite_split_rule = 'botright' " 下or右に開く
+let g:unite_split_rule = 'topleft' " 上or左に開く
 
 "---------------------------------------------------------------
 " key-mappings (denite)
@@ -879,7 +1054,7 @@ endif
   "nmap <silent> [unite]a :<C-u>UniteBookmarkAdd<CR>
   
   " most recently viewed files
-  let g:unite_source_file_mru_limit = 50
+  let g:unite_source_file_mru_limit = 5000
   "file_mruの表示フォーマットを指定。空にすると表示スピードが高速化される
   let g:unite_source_file_mru_filename_format = ''
   nmap <silent> [unite]mt :<C-u>Unite file_mru -default-action=tabopen<CR>
