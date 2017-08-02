@@ -33,36 +33,7 @@ repo = 'cespare/vim-toml'
 on_ft = 'toml'
 
 # カラースキーマ 一番したが有効
-# [[plugins]] # bad in md
-# repo = 'altercation/vim-colors-solarized'
-# hook_add = '''
-#   set background=dark
-#   au MyAutoCmd VimEnter * nested colorscheme solarized
-#   let g:solarized_termcolors=256
-#   let g:solarized_termtrans = 1 
-#   "let g:solarized_bold = 1 | 0 
-#   "let g:solarized_underline = 1 | 0 
-#   "let g:solarized_italic = 1 | 0 
-#   "let g:solarized_contrast = "normal"| "high" or "low" 
-#   "let g:solarized_visibility= "normal"| "high" or "low" 
-# '''
-#[[plugins]] # bad in cursol
-#repo = 'w0ng/vim-hybrid'
-#hook_add = '''
-#  let g:hybrid_custom_term_colors = 1
-#  "let g:hybrid_reduced_contrast = 0
-#  set background=dark
-#  " colorscheme 設定は source 後に行う必要があるので VimEnter で行う。
-#  " 但し Colorscheme イベントの発生が抑制されないよう nented を付ける。
-#  au MyAutoCmd VimEnter * nested colorscheme hybrid
-#'''
-#[[plugins]] # bad in md
-#repo = 'chriskempson/tomorrow-theme/vim'
-#hook_add = '''
-#  set background=dark
-#  au MyAutoCmd VimEnter * nested colorscheme Tomorrow-Night
-#'''
-#[[plugins]]# ** in md is not colored
+#[[plugins]] # not hilighted h1 in md
 #repo = 'nanotech/jellybeans.vim'
 #hook_add = '''
 #  set background=dark
@@ -71,19 +42,54 @@ on_ft = 'toml'
 #  \    'background': { 'ctermbg': 'none', '256ctermbg': 'none' },
 #  \}
 #'''
-#[[plugins]]
+#[[plugins]] # not hilighted h1 in md
+#repo = 'tomasr/molokai'
+#hook_add = '''
+#  set background=dark
+#  let g:molokai_original = 1
+#  "let g:rehash256 = 1
+#  au MyAutoCmd VimEnter * nested colorscheme molokai
+#'''
+#[[plugins]]  # not hilight h1 in md
 #repo = 'aereal/vim-colors-japanesque'
 #hook_add = '''
 #  set background=dark
 #  au MyAutoCmd VimEnter * nested colorscheme japanesque
 #'''
-#[[plugins]]
-#repo = 'tomasr/molokai'
+#[[plugins]]  # not hilight h1 in md
+#repo = 'joshdick/onedark.vim'
+#hook_add = '''
+#  "set background=dark
+#  " let g:gruvbox_italic=1
+#  au MyAutoCmd VimEnter * nested colorscheme onedark
+#  au MyAutoCmd VimEnter * highlight Visual ctermbg=216
+#  " Makes the background transparent
+#  au MyAutoCmd VimEnter * nested highlight Normal ctermbg=NONE guibg=NONE
+#  au MyAutoCmd VimEnter * nested highlight NonText ctermbg=NONE guibg=NONE
+#'''
+#[[plugins]]  # not hilight h1 in md
+#repo = 'mhartington/oceanic-next'
 #hook_add = '''
 #  set background=dark
-#  "let g:molokai_original = 1
-#  "let g:rehash256 = 1
-#  au MyAutoCmd VimEnter * nested colorscheme molokai
+#  " let g:gruvbox_italic=1
+#  au MyAutoCmd VimEnter * nested colorscheme OceanicNext
+#  au MyAutoCmd VimEnter * highlight Visual ctermbg=216
+#  " " Makes the background transparent
+#  " au MyAutoCmd VimEnter * nested highlight Normal ctermbg=NONE guibg=NONE
+#  " au MyAutoCmd VimEnter * nested highlight NonText ctermbg=NONE guibg=NONE
+#'''
+#[[plugins]] # not so good main text in md
+#repo = 'altercation/vim-colors-solarized'
+#hook_add = '''
+#  set background=dark
+#  au MyAutoCmd VimEnter * nested colorscheme solarized
+#  let g:solarized_termcolors=256
+#  let g:solarized_termtrans = 1 
+#  "let g:solarized_bold = 1 | 0 
+#  "let g:solarized_underline = 1 | 0 
+#  "let g:solarized_italic = 1 | 0 
+#  "let g:solarized_contrast = "normal"| "high" or "low" 
+#  "let g:solarized_visibility= "normal"| "high" or "low" 
 #'''
 [[plugins]]
 repo = 'morhetz/gruvbox'
@@ -96,6 +102,19 @@ hook_add = '''
   " au MyAutoCmd VimEnter * nested highlight Normal ctermbg=NONE guibg=NONE
   " au MyAutoCmd VimEnter * nested highlight NonText ctermbg=NONE guibg=NONE
 '''
+[[plugins]] # bad in cursol
+repo = 'w0ng/vim-hybrid'
+hook_add = '''
+  let g:hybrid_custom_term_colors = 1
+  "let g:hybrid_reduced_contrast = 0
+  set background=dark
+  " colorscheme 設定は source 後に行う必要があるので VimEnter で行う。
+  " 但し Colorscheme イベントの発生が抑制されないよう nented を付ける。
+  au MyAutoCmd VimEnter * nested colorscheme hybrid
+'''
+
+[[plugins]]
+repo = 'sheerun/vim-polyglot'
 
 [[plugins]]
 repo = 'Shougo/vimproc.vim'
