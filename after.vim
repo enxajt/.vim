@@ -1,3 +1,4 @@
+
 " ↓3 下ほど明るい黄色
 "autocmd ColorScheme * highlight LineNr ctermfg=22 guifg=#666611
 autocmd ColorScheme * highlight LineNr ctermfg=22 guifg=#999955
