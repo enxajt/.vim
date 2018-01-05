@@ -219,3 +219,15 @@ repo = 'Shougo/unite-outline'
 [[plugins]]
 repo = 'Shougo/vimshell'
 rev= '3787e5'
+
+# pluntumlのシンタクスハイライトと:makeコマンド
+# *.pu か *.uml か *.plantuml 
+[[plugins]]
+repo = 'aklt/plantuml-syntax'
+#NeoBundle 'vim-scripts/plantuml-syntax'
+
+[[plugins]]
+repo = 'scrooloose/vim-slumlord'
+
+[[plugins]]
+repo = 'fatih/vim-go'

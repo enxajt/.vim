@@ -7,7 +7,7 @@ if &compatible
 endif
 
 "---------------------------------------------------------------
-" NeoBundle 2016/3/11
+" NeoBundle 2016/3/11 > dein
 "
 let s:neo_enabled  = 0
 if v:version < 704 || has('win64')
@@ -60,9 +60,10 @@ call neobundle#begin(expand($VIM.'/bundle'))
 
   " pluntumlのシンタクスハイライトと:makeコマンド
   " *.pu か *.uml か *.plantuml 
-  "NeoBundle 'aklt/plantuml-syntax'
+  NeoBundle 'aklt/plantuml-syntax'
   "letg:plantuml_executable_script = "~/dotfiles/plantuml"
   "NeoBundle 'vim-scripts/plantuml-syntax'
+  NeoBundle 'vim-slumlord'
 
   " unite
   NeoBundle 'sgur/unite-everything'
@@ -933,3 +934,14 @@ if has('unix') && !has('gui_running')
   " ESCでcommand modeにする
   tnoremap <silent> <ESC> <C-\><C-n>
 endif
+
+"---------------------------------------------------------------
+" plantuml
+"
+let g:plantuml_executable_script = "$HOME/docker-plantuml/plantuml"
+
+"---------------------------------------------------------------
+" go
+"
+let g:go_bin_path = $GOPATH.'/bin'
+filetype plugin indent on
